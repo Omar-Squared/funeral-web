@@ -1,18 +1,18 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const formSchema = z.object({
     name: z.string().min(3),
     emailAddress: z.string().email(),
-    // accountType: z.enum(["single", "family"]),
+    accountType: z.enum(["single", "family"]),
     spouseName: z.string(),
-    children: z.array(z.object({name: z.string()}))
+    children: z.array(z.object({ name: z.string() }))
 })
 
 export default function SingleRegistration() {
@@ -20,20 +20,42 @@ export default function SingleRegistration() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             emailAddress: "",
-            // accountType: "single", // Set default account type
+            accountType: "single", // Set default account type
             spouseName: "", // Initialize spouse name
             children: [{ name: "" }] // Initialize children array with an empty object
         }
     });
 
-    const handleSubmit = (values: z.infer<typeof formSchema>) => {}
+    const handleSubmit = (values: z.infer<typeof formSchema>) => { }
 
     return (
         <main className="flex min-h-screen col items-center justify-between p-24">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className="max-w-md w-full flex flex-col gap-4">
-                <FormField control={form.control} name="name" render={({ field }) => {
-                        return (
+                    <FormField
+                        control={form.control}
+                        name="accountType"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Register as</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select a verified email to display" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="single">Single</SelectItem>
+                                        <SelectItem value="family">Family</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Name</FormLabel>
                                 <FormControl>
@@ -41,10 +63,12 @@ export default function SingleRegistration() {
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
-                        );
-                    }} />
-                    <FormField control={form.control} name="emailAddress" render={({ field }) => {
-                        return (
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="emailAddress"
+                        render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Email Address</FormLabel>
                                 <FormControl>
@@ -52,8 +76,8 @@ export default function SingleRegistration() {
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
-                        );
-                    }} />
+                        )}
+                    />
                     <Button type="submit" className="w-full">
                         Submit
                     </Button>
@@ -61,4 +85,4 @@ export default function SingleRegistration() {
             </Form>
         </main>
     )
- }
+}
