@@ -1,8 +1,9 @@
 /**
  * v0 by Vercel.
- * @see https://v0.dev/t/OXuAF6KHu5C
+ * @see https://v0.dev/t/2jgiLhsAu9N
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -17,7 +18,7 @@ export default function Component() {
             <div className="space-y-4">
                 <div className="flex flex-col space-y-2">
                     <Label htmlFor="registration-type">Registration Type</Label>
-                    <Select>
+                    <Select required>
                         <SelectTrigger>
                             <SelectValue placeholder="Select Registration Type" />
                         </SelectTrigger>
@@ -29,7 +30,7 @@ export default function Component() {
                 </div>
                 <div className="flex flex-col space-y-2">
                     <Label htmlFor="select-title">Select Title</Label>
-                    <Select>
+                    <Select required>
                         <SelectTrigger>
                             <SelectValue placeholder="Select Title" />
                         </SelectTrigger>
@@ -45,41 +46,49 @@ export default function Component() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="flex flex-col space-y-2">
                         <Label htmlFor="first-name">First Name</Label>
-                        <Input id="first-name" placeholder="Enter your first name" />
+                        <Input id="first-name" placeholder="Enter your first name" required />
                     </div>
                     <div className="flex flex-col space-y-2">
                         <Label htmlFor="middle-name">Middle Name</Label>
-                        <Input id="middle-name" placeholder="Enter your middle name" />
+                        <Input id="middle-name" placeholder="Enter your middle name" required />
                     </div>
                     <div className="flex flex-col space-y-2">
                         <Label htmlFor="surname">Surname</Label>
-                        <Input id="surname" placeholder="Enter your surname" />
+                        <Input id="surname" placeholder="Enter your surname" required />
                     </div>
                 </div>
                 <div className="flex flex-col space-y-2">
                     <Label htmlFor="phone">Phone number</Label>
-                    <Input id="phone" placeholder="Enter your phone number" type="tel" />
+                    <Input id="phone" placeholder="Enter your phone number" required type="tel" />
                 </div>
                 <div className="flex flex-col space-y-2">
                     <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" placeholder="Enter your email" type="email" />
+                    <Input id="email" placeholder="Enter your email" required type="email" />
                 </div>
                 <div className="flex flex-col space-y-2">
                     <Label htmlFor="address">Road/Street: House/Flat No</Label>
-                    <Input id="address" placeholder="Enter your address" />
+                    <Input id="address" placeholder="Enter your address" required />
                 </div>
                 <div className="flex flex-col space-y-2">
                     <Label htmlFor="postcode">Postcode</Label>
-                    <Input id="postcode" placeholder="Enter your postcode" />
+                    <Input id="postcode" placeholder="Enter your postcode" required />
                 </div>
                 <div className="flex flex-col space-y-2">
                     <Label htmlFor="kin-name">Emergency Contact Name</Label>
-                    <Input id="kin-name" placeholder="Enter next of kin name" />
+                    <Input id="kin-name" placeholder="Enter next of kin name" required />
                 </div>
                 <div className="flex flex-col space-y-2">
                     <Label htmlFor="kin-phone">Emergency Contact Phone Number</Label>
-                    <Input id="kin-phone" placeholder="Enter next of kin phone number" />
+                    <Input id="kin-phone" placeholder="Enter next of kin phone number" required />
                 </div>
+                <div className="flex justify-center">
+                    <Button className="w-[50%] bg-gray-900 text-gray-50 py-3 rounded-lg" type="submit">
+                        Submit
+                    </Button>
+                </div>
+                <p className="text-red-500 text-center w-full text-sm md:text-base lg:text-md">
+                    Please fill out all required fields before submitting.
+                </p>
             </div>
         </div>
     )
