@@ -11,8 +11,16 @@ const formSchema = z.object({
     name: z.string().min(3),
     emailAddress: z.string().email(),
     accountType: z.enum(["single", "family"]),
-    spouseName: z.string(),
-    children: z.array(z.object({ name: z.string() }))
+    spouseName: z.string().optional(),
+    children: z.array(z.object({ name: z.string().min(3) })).optional()
+}).refine((data)=> {
+    if(data.accountType ==="family"){
+        return (!!data.spouseName) || (!!data.children)
+    }
+    return true;
+}, {
+    message: "a Family account requires either a spouse or child",
+    path: ["accountType"]
 })
 
 export default function SingleRegistration() {
@@ -26,7 +34,9 @@ export default function SingleRegistration() {
         }
     });
 
-    const handleSubmit = (values: z.infer<typeof formSchema>) => { }
+    const handleSubmit = (values: z.infer<typeof formSchema>) => { 
+        console.log({values})
+    }
 
     return (
         <main className="flex min-h-screen col items-center justify-between p-24">
@@ -41,7 +51,7 @@ export default function SingleRegistration() {
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Select a verified email to display" />
+                                            <SelectValue />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
