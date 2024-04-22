@@ -1,8 +1,10 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,6 +21,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Check } from "lucide-react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -50,6 +54,7 @@ const formSchema = z.object({
   resident: z.boolean(),
   spouseName: z.string().optional(),
   children: z.array(z.object({ name: z.string().min(3) })).optional(),
+  terms: z.boolean(),
 });
 
 export default function SingleRegistration() {
@@ -69,7 +74,7 @@ export default function SingleRegistration() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
-          className="flex flex-col gap-4 "
+          className="flex flex-col gap-4 justify-center"
         >
           <FormField
             control={form.control}
@@ -327,10 +332,13 @@ export default function SingleRegistration() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-min flex-auto">
             Submit
           </Button>
-          <p>By pressing Submit you agree to our Rules</p>
+          <FormDescription>
+            By submitting this form you agree to the{" "}
+            <Link href="/rules">rules</Link>{" "}
+          </FormDescription>
         </form>
       </Form>
     </main>
