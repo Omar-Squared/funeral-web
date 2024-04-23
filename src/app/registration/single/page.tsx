@@ -1,6 +1,8 @@
 "use client";
+import FileDrop from "@/components/filedrop";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog } from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -32,7 +34,7 @@ const postcodeValidation =
 
 const formSchema = z.object({
   firstName: z.string().min(3, { message: "Minimum 3 characters" }),
-  middleName: z.string(),
+  middleName: z.string().optional(),
   lastName: z.string().min(3, { message: "Minimum 3 characters" }),
   emailAddress: z.string().email(),
   accountType: z.enum(["single", "family"]),
@@ -70,11 +72,11 @@ export default function SingleRegistration() {
   };
 
   return (
-    <main className="flex min-h-screen justify-between p-24">
+    <main className="max-w-mx mx-auto p-24 sm:p-10 flex flex-col justify-center min-h-screen max-h:w-screen ">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
-          className="flex flex-col gap-4 justify-center"
+          className="w-md flex flex-col gap-4 "
         >
           <FormField
             control={form.control}
@@ -251,7 +253,7 @@ export default function SingleRegistration() {
             name="emergencyNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Contact Number</FormLabel>
+                <FormLabel>Emergency Contact Number </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Emergency Contact Number"
@@ -332,12 +334,15 @@ export default function SingleRegistration() {
               </FormItem>
             )}
           />
+          <FileDrop />
           <Button type="submit" className="w-min flex-auto">
             Submit
           </Button>
           <FormDescription>
             By submitting this form you agree to the{" "}
-            <Link href="/rules">rules</Link>{" "}
+            <Link href="/terms">
+              <u>Terms and Conditions and Privacy Policy</u>
+            </Link>{" "}
           </FormDescription>
         </form>
       </Form>
