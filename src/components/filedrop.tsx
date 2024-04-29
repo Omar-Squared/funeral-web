@@ -12,11 +12,11 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 
-export default function FileDrop(props) {
+export default function FileDrop() {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
-    onDrop: onFileUpload,
-    accept: "image/*, application/pdf",
-    maxSize: 1024 * 1024 * 10,
+    // onDrop: onFileUpload,
+    // accept: ".pdf, ",
+    // maxSize: 1024 * 1024 * 10,
   });
 
   const files = acceptedFiles.map((file) => (
@@ -40,7 +40,7 @@ export default function FileDrop(props) {
                 <p>Drag 'n' drop some files here, or click to select files</p>
               </div>
               <aside>
-                <h4>Files</h4>
+                <h4 className="bold">File</h4>
                 <ul>{files}</ul>
               </aside>
             </section>

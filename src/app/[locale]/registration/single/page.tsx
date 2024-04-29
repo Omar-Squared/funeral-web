@@ -1,8 +1,5 @@
 "use client";
-import FileDrop from "@/components/filedrop";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Dialog } from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -23,11 +20,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
+const MAX_UPLOAD_SIZE = 1024 * 10 * 24 * 5;
 const phoneValidation = /^(?:(?:\+|00)44|0)7(?:[45789]\d{2}|624)\d{6}$/;
 const postcodeValidation =
   /^(GIR|[A-Z]\d[A-Z\d]??|[A-Z]{2}\d[A-Z\d]??)[ ]??(\d[A-Z]{2}|BFPO[ ]?\d{1,4}|(KY\d|MSR|VG|AI)[ ]?\d{1,4}|(AI-2640|KY\d|MSR|VG|AI)[ ]?\d{1,4}|[A-Z]{2}|GEICO[ ]?\d{1,4}|[A-Z]{2}[ ]?\d{1,4})$/i;
@@ -51,12 +48,28 @@ const formSchema = z.object({
   emergencyNumber: z
     .string()
     .regex(phoneValidation, { message: "Invalid UK phone number" }),
-  hospitalised: z.boolean(),
-  benefits: z.boolean(),
-  resident: z.boolean(),
-  spouseName: z.string().optional(),
-  children: z.array(z.object({ name: z.string().min(3) })).optional(),
+  hospitalised: z.string(),
+  benefits: z.string(),
+  resident: z.string(),
   terms: z.boolean(),
+  proofId:
+    typeof window === "undefined"
+      ? z.any()
+      : z
+          .instanceof(File)
+          .refine((files) => files !== null, "File is required")
+          .refine((files) => {
+            return files?.size <= MAX_UPLOAD_SIZE;
+          }, "Max image size is 5MB."),
+  proofAddress:
+    typeof window === "undefined"
+      ? z.any()
+      : z
+          .instanceof(File)
+          .refine((files) => files !== null, "File is required")
+          .refine((files) => {
+            return files?.size <= MAX_UPLOAD_SIZE;
+          }, "Max image size is 5MB."),
 });
 
 export default function SingleRegistration() {
@@ -272,14 +285,19 @@ export default function SingleRegistration() {
               <FormItem>
                 <FormLabel>Are you in care?</FormLabel>
                 <FormControl>
-                  <RadioGroup defaultValue="yes">
+                  <RadioGroup
+                    value={field.value}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                    }}
+                  >
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="yes" id="r1" />
-                      <Label htmlFor="r1">Yes</Label>
+                      <RadioGroupItem value="yes" id="hospitalisedYes" />
+                      <Label htmlFor="hospitalisedYes">Yes</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="no" id="r2" />
-                      <Label htmlFor="r2">No</Label>
+                      <RadioGroupItem value="no" id="hospitalisedNp" />
+                      <Label htmlFor="hospitalisedNo">No</Label>
                     </div>
                   </RadioGroup>
                 </FormControl>
@@ -297,14 +315,19 @@ export default function SingleRegistration() {
                   credit
                 </FormLabel>
                 <FormControl>
-                  <RadioGroup defaultValue="yes">
+                  <RadioGroup
+                    value={field.value}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                    }}
+                  >
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="yes" id="r1" />
-                      <Label htmlFor="r1">Yes</Label>
+                      <RadioGroupItem value="yes" id="benefitsYes" />
+                      <Label htmlFor="benefitsYes">Yes</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="no" id="r2" />
-                      <Label htmlFor="r2">No</Label>
+                      <RadioGroupItem value="no" id="benefitsNo" />
+                      <Label htmlFor="benefitsNo">No</Label>
                     </div>
                   </RadioGroup>
                 </FormControl>
@@ -319,14 +342,19 @@ export default function SingleRegistration() {
               <FormItem>
                 <FormLabel>Are you a resident of the UK</FormLabel>
                 <FormControl>
-                  <RadioGroup defaultValue="yes">
+                  <RadioGroup
+                    value={field.value}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                    }}
+                  >
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="yes" id="r1" />
-                      <Label htmlFor="r1">Yes</Label>
+                      <RadioGroupItem value="yes" id="residentYes" />
+                      <Label htmlFor="residentYes">Yes</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="no" id="r2" />
-                      <Label htmlFor="r2">No</Label>
+                      <RadioGroupItem value="no" id="residentNo" />
+                      <Label htmlFor="residentYes">No</Label>
                     </div>
                   </RadioGroup>
                 </FormControl>
@@ -334,7 +362,36 @@ export default function SingleRegistration() {
               </FormItem>
             )}
           />
-          <FileDrop />
+          <FormField
+            control={form.control}
+            name="proofId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Proof of ID e.g. Picture of Passport, Driving License
+                </FormLabel>
+                <FormControl>
+                  <Input type="file" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="proofAddress"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Proof of Address e.g Bank Statements, Council Tax Bill
+                </FormLabel>
+                <FormControl>
+                  <Input type="file" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <Button type="submit" className="w-min flex-auto">
             Submit
           </Button>
@@ -344,6 +401,7 @@ export default function SingleRegistration() {
               <u>Terms and Conditions and Privacy Policy</u>
             </Link>{" "}
           </FormDescription>
+          <pre>{JSON.stringify(form.watch(), null, 2)}</pre>
         </form>
       </Form>
     </main>
